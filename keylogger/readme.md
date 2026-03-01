@@ -21,7 +21,7 @@ O script foi desenvolvido utilizando a biblioteca `pynput` para escutar passivam
 **Comportamento do Script:**
 1. **Captura:** O *listener* roda em segundo plano, registrando cada tecla pressionada pelo usuário.
 2. **Armazenamento:** As teclas são formatadas e salvas sequencialmente em um arquivo local chamado `log.txt`. 
-3. **Evidências de Captura:** Durante os testes, o script demonstrou sucesso em capturar dados variados, desde conversas ("fofoca da empresa" [cite: 4][cite_start]) até potenciais credenciais ("senha 123") e acessos a URLs sensíveis, como páginas de configuração de senhas de aplicativo de contas do Google.
+3. **Evidências de Captura:** Durante os testes, o script demonstrou sucesso em capturar dados variados, desde conversas ("fofoca da empresa") até potenciais credenciais ("senha 123") e acessos a URLs sensíveis, como páginas de configuração de senhas de aplicativo de contas do Google.
 
 ---
 **Aviso Legal:** *Os códigos aqui presentes foram desenvolvidos unicamente para fins de estudo e conscientização em segurança da informação. Não utilize estes scripts em ambientes de produção ou sem autorização.*
