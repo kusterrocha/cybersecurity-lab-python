@@ -1,4 +1,4 @@
-# 🛡️ Desafio Prático: Simulação de Malware e Reflexão sobre Defesas
+# 🛡️ Desafio Prático: Simulação de Malware, Keylogger e Reflexão sobre Defesas
 
 Este repositório contém os scripts e a documentação do projeto prático do **Bootcamp Riachuelo - Cibersegurança da DIO**. O objetivo deste laboratório foi compreender o funcionamento sob o capô de duas ameaças clássicas (Ransomware e Keylogger) utilizando Python em um ambiente estritamente educacional e controlado.
 
