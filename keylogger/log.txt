@@ -1,0 +1,4 @@
+1234None6senha1234None6 Key.ctrl ckuster Key.shift_r @terra.com.br Key.tab senha1234 [<65437>] 6789kuster Key.shift_r @dio.com.br Key.tab senhaabcd1234nano teste.txt
+senha terra Key.backspace  Key.backspace  Key.backspace  Key.backspace  Key.backspace terra.com.br Key.shift_r : senha1234 [<65437>] 6789
+senha dio.com.br Key.shift_r : senhaabcd1234
+ Key.ctrl c
